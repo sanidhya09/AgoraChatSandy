@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "435487459249",
+    "firebase_url": "https://agorachatsandy.firebaseio.com",
+    "project_id": "agorachatsandy",
+    "storage_bucket": "agorachatsandy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435487459249:android:92945b8a3897784d0c5f90",
+        "android_client_info": {
+          "package_name": "com.sandy.agorachatsandy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435487459249-gllo27mcb18ulfltnoapkjqsopja11a8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACIcJPhYtQxyZlfjrgdyb3EFf63hhrtWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435487459249-gllo27mcb18ulfltnoapkjqsopja11a8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
