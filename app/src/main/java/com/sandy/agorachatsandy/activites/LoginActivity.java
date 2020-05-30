@@ -64,8 +64,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(LoginActivity.this, ChannelSelectionActivity.class);
-                        intent.putExtra(MessageUtil.INTENT_EXTRA_USER_ID, user);
+//                        Intent intent = new Intent(LoginActivity.this, ChannelSelectionActivity.class);
+//                        intent.putExtra(MessageUtil.INTENT_EXTRA_USER_ID, user);
+//                        startActivity(intent);
+                        Intent intent = new Intent(LoginActivity.this, VideoCallActivity.class);
+                        intent.putExtra("User", user);
+                        intent.putExtra("Channel", "sandy");
+                        intent.putExtra(MessageUtil.INTENT_EXTRA_IS_PEER_MODE, false);
+                        intent.putExtra("Actual Target", "sandy");
                         startActivity(intent);
                     }
                 });
@@ -86,6 +92,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     public void signOut() {
+        TextView textView = findViewById(R.id.status_textview);
+        textView.setText("");
         mRtmClient.logout(null);
         MessageUtil.cleanMessageListBeanList();
     }
