@@ -23,7 +23,7 @@ class AgoraLoginActivity : AppCompatActivity(), View.OnClickListener {
         mChatManager.rtmClient
     }
     private val mRandom: Random by lazy {
-        Random(10000)
+        Random(System.nanoTime())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class AgoraLoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun signIn() {
         val user = AgoraUser("100${mRandom.nextInt()}")
-        user.displayName = "Sanidhya_${mRandom.nextInt()}"
+        user.displayName = "S_${mRandom.nextInt()}"
         val textView = findViewById<TextView>(R.id.status_textview)
         textView.text = user.displayName
         mRtmClient.login(null, user.displayName, object : ResultCallback<Void?> {
