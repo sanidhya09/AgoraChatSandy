@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Agora Whatsapp Demo</string>
+    <string name="app_name">Agora Sandy</string>
     <string name="agora_app_id">dd0583c75d644fefa86d3abd10d25c54</string>
 
     <string name="account_cannot_be_yourself">Account can not be yourself</string>

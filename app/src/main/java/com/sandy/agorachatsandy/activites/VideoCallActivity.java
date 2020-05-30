@@ -51,7 +51,7 @@ public class VideoCallActivity extends AppCompatActivity {
     public int mLayoutType = LAYOUT_TYPE_DEFAULT;
     private static final int PERMISSION_REQ_ID = 22;
     RtcEngine mRtcEngine;
-    private ImageView mCallBtn, mMuteBtn, mSwitchVoiceBtn;
+    private ImageView mCallBtn, mMuteBtn;
     private GridVideoViewContainer mGridVideoViewContainer;
     private boolean isCalling = true;
     private boolean isMuted = false;
@@ -148,7 +148,6 @@ public class VideoCallActivity extends AppCompatActivity {
     private void initUI() {
         mCallBtn = findViewById(R.id.start_call_end_call_btn);
         mMuteBtn = findViewById(R.id.audio_mute_audio_unmute_btn);
-        mSwitchVoiceBtn = findViewById(R.id.switch_voice_btn);
 
         mGridVideoViewContainer = findViewById(R.id.grid_video_view_container);
         mGridVideoViewContainer.setItemEventHandler(new RecyclerItemClickListener.OnItemClickListener() {
@@ -256,13 +255,13 @@ public class VideoCallActivity extends AppCompatActivity {
 
     private void bindToSmallVideoView(int exceptUid) {
         if (mSmallVideoViewDock == null) {
-            ViewStub stub = (ViewStub) findViewById(R.id.small_video_view_dock);
+            ViewStub stub = findViewById(R.id.small_video_view_dock);
             mSmallVideoViewDock = (RelativeLayout) stub.inflate();
         }
 
         boolean twoWayVideoCall = mUidsList.size() == 2;
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.small_video_view_container);
+        RecyclerView recycler = findViewById(R.id.small_video_view_container);
 
         boolean create = false;
 
@@ -429,21 +428,6 @@ public class VideoCallActivity extends AppCompatActivity {
         mRtcEngine.muteLocalAudioStream(isMuted);
         int res = isMuted ? R.drawable.btn_mute : R.drawable.btn_unmute;
         mMuteBtn.setImageResource(res);
-    }
-
-    public void onSwitchVoiceClicked(View view) {
-        if (!isVoiceChanged) {
-            //start voice change to little girl, can be changed to different voices
-            mRtcEngine.setLocalVoiceChanger(3);
-            Toast.makeText(this, "Voice changer activate", Toast.LENGTH_SHORT).show();
-        } else {
-            //disable voice change
-            Toast.makeText(this, "Voice back to normal", Toast.LENGTH_SHORT).show();
-            mRtcEngine.setLocalVoiceReverbPreset(0);
-        }
-        int res = !isVoiceChanged ? R.drawable.ic_change_voice_24dp : R.drawable.ic_change_voice_normal_24dp;
-        mSwitchVoiceBtn.setImageResource(res);
-        isVoiceChanged = !isVoiceChanged;
     }
 
     public void onVideoChatClicked(View view) {
