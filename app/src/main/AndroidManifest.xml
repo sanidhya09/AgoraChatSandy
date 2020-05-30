@@ -21,9 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activites.VideoCallActivity" />
-        <activity android:name=".activites.MessageActivity" />
-        <activity android:name=".activites.LoginActivity">
+        <activity android:name=".activites.AgoraVideoCallActivity" />
+        <activity android:name=".activites.AgoraMessageActivity" />
+        <activity android:name=".activites.AgoraLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

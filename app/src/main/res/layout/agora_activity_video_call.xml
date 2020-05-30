@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activites.VideoCallActivity">
+    tools:context=".activites.AgoraVideoCallActivity">
 
-    <com.sandy.agorachatsandy.layout.GridVideoViewContainer
+    <com.sandy.agorachatsandy.layout.AgoraGridVideoViewContainer
         android:id="@+id/grid_video_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:inflatedId="@id/small_video_view_dock"
-        android:layout="@layout/small_video_view_dock" />
+        android:layout="@layout/agora_small_video_view_dock" />
 
     <RelativeLayout
         android:id="@+id/control_panel"
@@ -27,8 +27,8 @@
 
         <ImageView
             android:id="@+id/start_call_end_call_btn"
-            android:layout_width="@dimen/call_button_size"
-            android:layout_height="@dimen/call_button_size"
+            android:layout_width="@dimen/agora_call_button_size"
+            android:layout_height="@dimen/agora_call_button_size"
             android:layout_centerInParent="true"
             android:onClick="onCallClicked"
             android:scaleType="centerCrop"
@@ -36,8 +36,8 @@
 
         <ImageView
             android:id="@+id/switch_camera_btn"
-            android:layout_width="@dimen/other_button_size"
-            android:layout_height="@dimen/other_button_size"
+            android:layout_width="@dimen/agora_other_button_size"
+            android:layout_height="@dimen/agora_other_button_size"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/control_bottom_horizontal_margin"
             android:layout_toEndOf="@id/start_call_end_call_btn"
@@ -48,8 +48,8 @@
 
         <ImageView
             android:id="@+id/audio_mute_audio_unmute_btn"
-            android:layout_width="@dimen/other_button_size"
-            android:layout_height="@dimen/other_button_size"
+            android:layout_width="@dimen/agora_other_button_size"
+            android:layout_height="@dimen/agora_other_button_size"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/control_bottom_horizontal_margin"
             android:layout_toStartOf="@id/start_call_end_call_btn"
@@ -60,8 +60,8 @@
 
         <ImageView
             android:id="@+id/video_chat_btn"
-            android:layout_width="@dimen/other_button_size"
-            android:layout_height="@dimen/other_button_size"
+            android:layout_width="@dimen/agora_other_button_size"
+            android:layout_height="@dimen/agora_other_button_size"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/control_bottom_horizontal_margin"
             android:layout_toEndOf="@id/switch_camera_btn"

@@ -1,7 +1,7 @@
 package com.sandy.agorachatsandy.model;
 
 
-import com.sandy.agorachatsandy.rtm.ChatManager;
+import com.sandy.agorachatsandy.rtm.AgoraChatManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,9 @@ import io.agora.rtm.RtmMessage;
 
 public class MessageListBean {
     private String accountOther;
-    private List<MessageBean> messageBeanList;
+    private List<AgoraMessageBean> messageBeanList;
 
-    public MessageListBean(String account, List<MessageBean> messageBeanList) {
+    public MessageListBean(String account, List<AgoraMessageBean> messageBeanList) {
         this.accountOther = account;
         this.messageBeanList = messageBeanList;
     }
@@ -22,14 +22,14 @@ public class MessageListBean {
      * @param account peer user id to find offline messages from
      * @param chatManager chat manager that managers offline message pool
      */
-    public MessageListBean(String account, ChatManager chatManager) {
+    public MessageListBean(String account, AgoraChatManager chatManager) {
         accountOther = account;
         messageBeanList = new ArrayList<>();
 
         List<RtmMessage> messageList = chatManager.getAllOfflineMessages(account);
         for (RtmMessage m : messageList) {
             // All offline messages are from peer users
-            MessageBean bean = new MessageBean(account, m.getText(), false);
+            AgoraMessageBean bean = new AgoraMessageBean(account, m.getText(), false);
             messageBeanList.add(bean);
         }
     }
@@ -42,11 +42,11 @@ public class MessageListBean {
         this.accountOther = accountOther;
     }
 
-    public List<MessageBean> getMessageBeanList() {
+    public List<AgoraMessageBean> getMessageBeanList() {
         return messageBeanList;
     }
 
-    public void setMessageBeanList(List<MessageBean> messageBeanList) {
+    public void setMessageBeanList(List<AgoraMessageBean> messageBeanList) {
         this.messageBeanList = messageBeanList;
     }
 }

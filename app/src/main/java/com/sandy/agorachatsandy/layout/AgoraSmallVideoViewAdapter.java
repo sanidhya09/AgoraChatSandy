@@ -8,18 +8,18 @@ import android.view.WindowManager;
 
 import java.util.HashMap;
 
-public class SmallVideoViewAdapter extends VideoViewAdapter {
+public class AgoraSmallVideoViewAdapter extends AgoraVideoViewAdapter {
 
     private int mExceptedUid;
 
-    public SmallVideoViewAdapter(Activity activity, int localUid, int exceptedUid, HashMap<Integer, SurfaceView> uids) {
+    public AgoraSmallVideoViewAdapter(Activity activity, int localUid, int exceptedUid, HashMap<Integer, SurfaceView> uids) {
         super(activity, localUid, uids);
         mExceptedUid = exceptedUid;
     }
 
     @Override
     protected void customizedInit(HashMap<Integer, SurfaceView> uids, boolean force) {
-        VideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, null, null, mVideoInfo, mExceptedUid);
+        AgoraVideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, null, null, mVideoInfo, mExceptedUid);
 
         if (force || mItemWidth == 0 || mItemHeight == 0) {
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -36,7 +36,7 @@ public class SmallVideoViewAdapter extends VideoViewAdapter {
 
         mExceptedUid = uidExcepted;
 
-        VideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, status, volume, mVideoInfo, uidExcepted);
+        AgoraVideoViewAdapterUtil.composeDataItem(mUsers, uids, mLocalUid, status, volume, mVideoInfo, uidExcepted);
 
         notifyDataSetChanged();
     }

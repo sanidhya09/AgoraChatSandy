@@ -5,7 +5,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SmallVideoViewDecoration extends RecyclerView.ItemDecoration {
+public class AgoraSmallVideoViewDecoration extends RecyclerView.ItemDecoration {
 
     private static final int divider = 12;
     private static final int header = 10;

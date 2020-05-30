@@ -21,11 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.layout.GridVideoViewContainer;
-import com.sandy.agorachatsandy.layout.SmallVideoViewAdapter;
-import com.sandy.agorachatsandy.layout.SmallVideoViewDecoration;
-import com.sandy.agorachatsandy.model.User;
-import com.sandy.agorachatsandy.model.UserStatusData;
+import com.sandy.agorachatsandy.layout.AgoraGridVideoViewContainer;
+import com.sandy.agorachatsandy.layout.AgoraSmallVideoViewAdapter;
+import com.sandy.agorachatsandy.layout.AgoraSmallVideoViewDecoration;
+import com.sandy.agorachatsandy.model.AgoraUser;
+import com.sandy.agorachatsandy.model.AgoraUserStatusData;
 import com.sandy.agorachatsandy.ui.RecyclerItemClickListener;
 import com.sandy.agorachatsandy.ui.RtlLinearLayoutManager;
 import com.sandy.agorachatsandy.utils.MessageUtil;
@@ -41,37 +41,23 @@ import io.agora.rtc.video.VideoCanvas;
 import static com.sandy.agorachatsandy.utils.MessageUtil.INTENT_EXTRA_IS_PEER_MODE;
 
 
-public class VideoCallActivity extends AppCompatActivity {
+public class AgoraVideoCallActivity extends AppCompatActivity {
     public static final int LAYOUT_TYPE_DEFAULT = 0;
     public static final int LAYOUT_TYPE_SMALL = 1;
 
     private String channelName;
-    private User user;
-    private static final String TAG = VideoCallActivity.class.getName();
+    private static final String TAG = AgoraVideoCallActivity.class.getName();
+    private AgoraUser user;
     public int mLayoutType = LAYOUT_TYPE_DEFAULT;
     private static final int PERMISSION_REQ_ID = 22;
     RtcEngine mRtcEngine;
     private ImageView mCallBtn, mMuteBtn;
-    private GridVideoViewContainer mGridVideoViewContainer;
+    private AgoraGridVideoViewContainer mGridVideoViewContainer;
     private boolean isCalling = true;
     private boolean isMuted = false;
     private boolean isVoiceChanged = false;
     private boolean mIsLandscape = false;
     private RelativeLayout mSmallVideoViewDock;
-    private SmallVideoViewAdapter mSmallVideoViewAdapter;
-    private boolean mIsPeerToPeerMode = true;
-    private String mActualTarget;
-
-    private final HashMap<Integer, SurfaceView> mUidsList = new HashMap<>();
-
-
-    // Ask for Android device permissions at runtime.
-    private static final String[] REQUESTED_PERMISSIONS = {
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         // Listen for the onJoinChannelSuccess callback.
@@ -80,7 +66,7 @@ public class VideoCallActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(VideoCallActivity.this, "User: " + uid + " join!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AgoraVideoCallActivity.this, "User: " + uid + " join!", Toast.LENGTH_LONG).show();
                     Log.i("agora", "Join channel success, uid: " + (uid & 0xFFFFFFFFL));
                     user.setAgoraUid(uid);
                     SurfaceView localView = mUidsList.remove(0);
@@ -110,13 +96,26 @@ public class VideoCallActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(VideoCallActivity.this, "User: " + uid + " left the room.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AgoraVideoCallActivity.this, "User: " + uid + " left the room.", Toast.LENGTH_LONG).show();
                     Log.i("agora", "User offline, uid: " + (uid & 0xFFFFFFFFL));
                     onRemoteUserLeft(uid);
                 }
             });
         }
     };
+    private boolean mIsPeerToPeerMode = true;
+    private String mActualTarget;
+
+    private final HashMap<Integer, SurfaceView> mUidsList = new HashMap<>();
+
+
+    // Ask for Android device permissions at runtime.
+    private static final String[] REQUESTED_PERMISSIONS = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private AgoraSmallVideoViewAdapter mSmallVideoViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +126,7 @@ public class VideoCallActivity extends AppCompatActivity {
         if (ab != null) {
             ab.hide();
         }
-        setContentView(R.layout.activity_video_call);
+        setContentView(R.layout.agora_activity_video_call);
         getExtras();
         initUI();
 
@@ -199,7 +198,7 @@ public class VideoCallActivity extends AppCompatActivity {
 
                 mUidsList.put(0, surfaceView);
 
-                mGridVideoViewContainer.initViewContainer(VideoCallActivity.this, 0, mUidsList, mIsLandscape);
+                mGridVideoViewContainer.initViewContainer(AgoraVideoCallActivity.this, 0, mUidsList, mIsLandscape);
             }
         });
     }
@@ -223,7 +222,7 @@ public class VideoCallActivity extends AppCompatActivity {
             return;
         }
 
-        UserStatusData user = mGridVideoViewContainer.getItem(position);
+        AgoraUserStatusData user = mGridVideoViewContainer.getItem(position);
         int uid = (user.mUid == 0) ? this.user.getAgoraUid() : user.mUid;
 
         if (mLayoutType == LAYOUT_TYPE_DEFAULT && mUidsList.size() != 1) {
@@ -267,7 +266,7 @@ public class VideoCallActivity extends AppCompatActivity {
 
         if (mSmallVideoViewAdapter == null) {
             create = true;
-            mSmallVideoViewAdapter = new SmallVideoViewAdapter(this, this.user.getAgoraUid(), exceptUid, mUidsList);
+            mSmallVideoViewAdapter = new AgoraSmallVideoViewAdapter(this, this.user.getAgoraUid(), exceptUid, mUidsList);
             mSmallVideoViewAdapter.setHasStableIds(true);
         }
         recycler.setHasFixedSize(true);
@@ -277,7 +276,7 @@ public class VideoCallActivity extends AppCompatActivity {
         } else {
             recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         }
-        recycler.addItemDecoration(new SmallVideoViewDecoration());
+        recycler.addItemDecoration(new AgoraSmallVideoViewDecoration());
         recycler.setAdapter(mSmallVideoViewAdapter);
         recycler.addOnItemTouchListener(new RecyclerItemClickListener(getBaseContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -356,7 +355,7 @@ public class VideoCallActivity extends AppCompatActivity {
 
     private void switchToDefaultVideoView() {
 
-        mGridVideoViewContainer.initViewContainer(VideoCallActivity.this, user.getAgoraUid(), mUidsList, mIsLandscape);
+        mGridVideoViewContainer.initViewContainer(AgoraVideoCallActivity.this, user.getAgoraUid(), mUidsList, mIsLandscape);
 
         boolean setRemoteUserPriorityFlag = false;
 
@@ -435,7 +434,7 @@ public class VideoCallActivity extends AppCompatActivity {
     }
 
     private void jumpToMessageActivity() {
-        Intent intent = new Intent(this, MessageActivity.class);
+        Intent intent = new Intent(this, AgoraMessageActivity.class);
         intent.putExtra(INTENT_EXTRA_IS_PEER_MODE, mIsPeerToPeerMode);
         if (!mIsPeerToPeerMode) {
             intent.putExtra(MessageUtil.INTENT_EXTRA_TARGET_NAME, channelName);

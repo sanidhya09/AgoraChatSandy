@@ -9,20 +9,19 @@ import android.view.WindowManager;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.sandy.agorachatsandy.model.UserStatusData;
+import com.sandy.agorachatsandy.model.AgoraUserStatusData;
 
 import java.util.HashMap;
 
-public class GridVideoViewContainerAdapter extends VideoViewAdapter {
+public class AgoraGridVideoViewContainerAdapter extends AgoraVideoViewAdapter {
 
-    public GridVideoViewContainerAdapter(Activity activity, int localUid, HashMap<Integer, SurfaceView> uids) {
+    public AgoraGridVideoViewContainerAdapter(Activity activity, int localUid, HashMap<Integer, SurfaceView> uids) {
         super(activity, localUid, uids);
     }
 
     @Override
     protected void customizedInit(HashMap<Integer, SurfaceView> uids, boolean force) {
-        VideoViewAdapterUtil.composeDataItem1(mUsers, uids, mLocalUid); // local uid
+        AgoraVideoViewAdapterUtil.composeDataItem1(mUsers, uids, mLocalUid); // local uid
 
         if (force || mItemWidth == 0 || mItemHeight == 0) {
             WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -61,7 +60,7 @@ public class GridVideoViewContainerAdapter extends VideoViewAdapter {
     public void notifyUiChanged(HashMap<Integer, SurfaceView> uids, int localUid, HashMap<Integer, Integer> status, HashMap<Integer, Integer> volume) {
         setLocalUid(localUid);
 
-        VideoViewAdapterUtil.composeDataItem(mUsers, uids, localUid, status, volume, mVideoInfo);
+        AgoraVideoViewAdapterUtil.composeDataItem(mUsers, uids, localUid, status, volume, mVideoInfo);
 
         notifyDataSetChanged();
     }
@@ -81,13 +80,13 @@ public class GridVideoViewContainerAdapter extends VideoViewAdapter {
         return mUsers.size();
     }
 
-    public UserStatusData getItem(int position) {
+    public AgoraUserStatusData getItem(int position) {
         return mUsers.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        UserStatusData user = mUsers.get(position);
+        AgoraUserStatusData user = mUsers.get(position);
 
         SurfaceView view = user.mView;
         if (view == null) {

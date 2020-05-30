@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.adapter.MessageAdapter;
-import com.sandy.agorachatsandy.model.MessageBean;
+import com.sandy.agorachatsandy.adapter.AgoraMessageAdapter;
+import com.sandy.agorachatsandy.model.AgoraMessageBean;
+import com.sandy.agorachatsandy.model.AgoraUser;
 import com.sandy.agorachatsandy.model.MessageListBean;
-import com.sandy.agorachatsandy.model.User;
 import com.sandy.agorachatsandy.rtm.AGApplication;
-import com.sandy.agorachatsandy.rtm.ChatManager;
+import com.sandy.agorachatsandy.rtm.AgoraChatManager;
 import com.sandy.agorachatsandy.utils.MessageUtil;
 
 import java.util.ArrayList;
@@ -36,24 +36,24 @@ import io.agora.rtm.RtmClientListener;
 import io.agora.rtm.RtmMessage;
 import io.agora.rtm.RtmStatusCode;
 
-public class MessageActivity extends AppCompatActivity {
+public class AgoraMessageActivity extends AppCompatActivity {
 
-    private final String TAG = MessageActivity.class.getSimpleName();
+    private final String TAG = AgoraMessageActivity.class.getSimpleName();
 
     private TextView mTitleTextView;
     private EditText mMsgEditText;
     private RecyclerView mRecyclerView;
-    private List<MessageBean> mMessageBeanList = new ArrayList<>();
-    private MessageAdapter mMessageAdapter;
+    private List<AgoraMessageBean> mMessageBeanList = new ArrayList<>();
+    private AgoraMessageAdapter mMessageAdapter;
 
     private boolean mIsPeerToPeerMode = true;
-    private User user;
+    private AgoraUser user;
     private String mPeerId = "";
     private String mChannelName = "";
     private int mChannelMemberCount = 1;
     private String targetName = "";
 
-    private ChatManager mChatManager;
+    private AgoraChatManager mChatManager;
     private RtmClient mRtmClient;
     private RtmClientListener mClientListener;
     private RtmChannel mRtmChannel;
@@ -61,7 +61,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        setContentView(R.layout.agora_activity_message);
         init();
     }
 
@@ -100,7 +100,7 @@ public class MessageActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        mMessageAdapter = new MessageAdapter(this, mMessageBeanList);
+        mMessageAdapter = new AgoraMessageAdapter(this, mMessageBeanList);
         mRecyclerView = findViewById(R.id.message_list);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mMessageAdapter);
@@ -205,6 +205,29 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    public void onClickSend(View v) {
+        String msg = mMsgEditText.getText().toString();
+        if (!msg.equals("")) {
+            AgoraMessageBean messageBean = new AgoraMessageBean(user.getFireDisplayName(), msg, true);
+            mMessageBeanList.add(messageBean);
+            mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
+            mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);
+            if (mIsPeerToPeerMode) {
+                sendPeerMessage(msg);
+            } else {
+                sendChannelMessage(msg);
+            }
+        }
+        mMsgEditText.setText("");
+    }
+
+    private void showToast(final String text) {
+        Toast.makeText(AgoraMessageActivity.this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickFinish(View v) {
+        finish();
+    }
 
     /**
      * API CALLBACK: rtm channel event listener
@@ -228,7 +251,7 @@ public class MessageActivity extends AppCompatActivity {
                     String account = fromMember.getUserId();
                     String msg = message.getText();
                     Log.i(TAG, "onMessageReceived account = " + account + " msg = " + msg);
-                    MessageBean messageBean = new MessageBean(account, msg, false);
+                    AgoraMessageBean messageBean = new AgoraMessageBean(account, msg, false);
                     messageBean.setBackground(getMessageColor(account));
                     mMessageBeanList.add(messageBean);
                     mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
@@ -258,77 +281,6 @@ public class MessageActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-
-    class MyRtmClientListener implements RtmClientListener {
-        @Override
-        public void onPeersOnlineStatusChanged(Map<String, Integer> map) {
-
-        }
-
-        @Override
-        public void onConnectionStateChanged(final int state, int reason) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    switch (state) {
-                        case RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING:
-                            showToast(getString(R.string.reconnecting));
-                            break;
-                        case RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED:
-                            showToast(getString(R.string.account_offline));
-                            setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED);
-                            finish();
-                            break;
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onMessageReceived(final RtmMessage message, final String peerId) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    String content = message.getText();
-                    if (peerId.equals(mPeerId)) {
-                        MessageBean messageBean = new MessageBean(peerId, content,false);
-                        messageBean.setBackground(getMessageColor(peerId));
-                        mMessageBeanList.add(messageBean);
-                        mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
-                        mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);
-                    } else {
-                        MessageUtil.addMessageBean(peerId, content);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onTokenExpired() {
-
-        }
-    }
-
-    public void onClickFinish(View v) {
-        finish();
-    }
-
-    public void onClickSend(View v) {
-        String msg = mMsgEditText.getText().toString();
-        if (!msg.equals("")) {
-            MessageBean messageBean = new MessageBean(user.getFireDisplayName(), msg, true);
-            mMessageBeanList.add(messageBean);
-            mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
-            mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);
-            if (mIsPeerToPeerMode) {
-                sendPeerMessage(msg);
-            } else {
-                sendChannelMessage(msg);
-            }
-        }
-        mMsgEditText.setText("");
     }
 
     /**
@@ -422,7 +374,53 @@ public class MessageActivity extends AppCompatActivity {
         mTitleTextView.setText(title);
     }
 
-    private void showToast(final String text) {
-        Toast.makeText(MessageActivity.this, text, Toast.LENGTH_SHORT).show();
+    class MyRtmClientListener implements RtmClientListener {
+        @Override
+        public void onPeersOnlineStatusChanged(Map<String, Integer> map) {
+
+        }
+
+        @Override
+        public void onConnectionStateChanged(final int state, int reason) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    switch (state) {
+                        case RtmStatusCode.ConnectionState.CONNECTION_STATE_RECONNECTING:
+                            showToast(getString(R.string.reconnecting));
+                            break;
+                        case RtmStatusCode.ConnectionState.CONNECTION_STATE_ABORTED:
+                            showToast(getString(R.string.account_offline));
+                            setResult(MessageUtil.ACTIVITY_RESULT_CONN_ABORTED);
+                            finish();
+                            break;
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onMessageReceived(final RtmMessage message, final String peerId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    String content = message.getText();
+                    if (peerId.equals(mPeerId)) {
+                        AgoraMessageBean messageBean = new AgoraMessageBean(peerId, content, false);
+                        messageBean.setBackground(getMessageColor(peerId));
+                        mMessageBeanList.add(messageBean);
+                        mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
+                        mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);
+                    } else {
+                        MessageUtil.addMessageBean(peerId, content);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onTokenExpired() {
+
+        }
     }
 }

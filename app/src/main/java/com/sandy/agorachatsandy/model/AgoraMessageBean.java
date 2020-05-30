@@ -1,12 +1,12 @@
 package com.sandy.agorachatsandy.model;
 
-public class MessageBean {
+public class AgoraMessageBean {
     private String account;
     private String message;
     private int background;
     private boolean beSelf;
 
-    public MessageBean(String account, String message, boolean beSelf) {
+    public AgoraMessageBean(String account, String message, boolean beSelf) {
         this.account = account;
         this.message = message;
         this.beSelf = beSelf;

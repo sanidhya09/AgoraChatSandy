@@ -4,7 +4,7 @@ import android.app.Application;
 
 public class AGApplication extends Application {
     private static AGApplication sInstance;
-    private ChatManager mChatManager;
+    private AgoraChatManager mChatManager;
 
     public static AGApplication the() {
         return sInstance;
@@ -15,12 +15,12 @@ public class AGApplication extends Application {
         super.onCreate();
         sInstance = this;
 
-        mChatManager = new ChatManager(this);
+        mChatManager = new AgoraChatManager(this);
         mChatManager.init();
         mChatManager.enableOfflineMessage(true);
     }
 
-    public ChatManager getChatManager() {
+    public AgoraChatManager getChatManager() {
         return mChatManager;
     }
 }

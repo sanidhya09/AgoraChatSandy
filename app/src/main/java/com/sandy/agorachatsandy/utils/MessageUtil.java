@@ -2,7 +2,7 @@ package com.sandy.agorachatsandy.utils;
 
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.MessageBean;
+import com.sandy.agorachatsandy.model.AgoraMessageBean;
 import com.sandy.agorachatsandy.model.MessageListBean;
 
 import java.util.ArrayList;
@@ -57,19 +57,19 @@ public class MessageUtil {
     }
 
     public static void addMessageBean(String account, String msg) {
-        MessageBean messageBean = new MessageBean(account, msg, false);
+        AgoraMessageBean messageBean = new AgoraMessageBean(account, msg, false);
         int ret = existMessageListBean(account);
         if (ret == -1) {
             // account not exist new messagelistbean
             messageBean.setBackground(MessageUtil.COLOR_ARRAY[RANDOM.nextInt(MessageUtil.COLOR_ARRAY.length)]);
-            List<MessageBean> messageBeanList = new ArrayList<>();
+            List<AgoraMessageBean> messageBeanList = new ArrayList<>();
             messageBeanList.add(messageBean);
             messageListBeanList.add(new MessageListBean(account, messageBeanList));
 
         } else {
             // account exist get messagelistbean
             MessageListBean bean = messageListBeanList.remove(ret);
-            List<MessageBean> messageBeanList = bean.getMessageBeanList();
+            List<AgoraMessageBean> messageBeanList = bean.getMessageBeanList();
             if (messageBeanList.size() > 0) {
                 messageBean.setBackground(messageBeanList.get(0).getBackground());
             } else {

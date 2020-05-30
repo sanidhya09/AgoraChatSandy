@@ -3,31 +3,31 @@ package com.sandy.agorachatsandy.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User implements Parcelable {
+public class AgoraUser implements Parcelable {
     private String fireUid, fireDisplayName;
     private int agoraUid;
 
-    public User(String fireUid) {
+    public static final Creator<AgoraUser> CREATOR = new Creator<AgoraUser>() {
+        @Override
+        public AgoraUser createFromParcel(Parcel in) {
+            return new AgoraUser(in);
+        }
+
+        @Override
+        public AgoraUser[] newArray(int size) {
+            return new AgoraUser[size];
+        }
+    };
+
+    public AgoraUser(String fireUid) {
         setFireUid(fireUid);
     }
 
-    protected User(Parcel in) {
+    protected AgoraUser(Parcel in) {
         fireUid = in.readString();
         fireDisplayName = in.readString();
         agoraUid = in.readInt();
     }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     public String getFireUid() {
         return fireUid;

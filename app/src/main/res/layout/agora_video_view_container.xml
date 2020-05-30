@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <include
-        layout="@layout/user_control_mask"
+        layout="@layout/agora_user_control_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

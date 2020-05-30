@@ -14,8 +14,8 @@ import io.agora.rtm.RtmMessage;
 import io.agora.rtm.SendMessageOptions;
 
 
-public class ChatManager {
-    private static final String TAG = ChatManager.class.getSimpleName();
+public class AgoraChatManager {
+    private static final String TAG = AgoraChatManager.class.getSimpleName();
 
     private Context mContext;
     private RtmClient mRtmclient;
@@ -24,7 +24,7 @@ public class ChatManager {
     private RtmMessagePool mMessagePool = new RtmMessagePool();
 
 
-    public ChatManager(Context context) {
+    public AgoraChatManager(Context context) {
         mContext = context;
     }
 

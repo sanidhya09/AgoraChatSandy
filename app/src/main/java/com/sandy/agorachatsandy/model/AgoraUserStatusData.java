@@ -2,23 +2,17 @@ package com.sandy.agorachatsandy.model;
 
 import android.view.SurfaceView;
 
-public class UserStatusData {
+public class AgoraUserStatusData {
     public static final int DEFAULT_STATUS = 0;
     public static final int VIDEO_MUTED = 1;
     public static final int AUDIO_MUTED = VIDEO_MUTED << 1;
 
     public static final int DEFAULT_VOLUME = 0;
 
-    public UserStatusData(int uid, SurfaceView view, Integer status, int volume) {
-        this(uid, view, status, volume, null);
-    }
+    private AgoraVideoInfoData mVideoInfo;
 
-    public UserStatusData(int uid, SurfaceView view, Integer status, int volume, VideoInfoData i) {
-        this.mUid = uid;
-        this.mView = view;
-        this.mStatus = status;
-        this.mVolume = volume;
-        this.mVideoInfo = i;
+    public AgoraUserStatusData(int uid, SurfaceView view, Integer status, int volume) {
+        this(uid, view, status, volume, null);
     }
 
     public int mUid;
@@ -29,13 +23,19 @@ public class UserStatusData {
 
     public int mVolume;
 
-    private VideoInfoData mVideoInfo;
+    public AgoraUserStatusData(int uid, SurfaceView view, Integer status, int volume, AgoraVideoInfoData i) {
+        this.mUid = uid;
+        this.mView = view;
+        this.mStatus = status;
+        this.mVolume = volume;
+        this.mVideoInfo = i;
+    }
 
-    public void setVideoInfo(VideoInfoData video) {
+    public void setVideoInfo(AgoraVideoInfoData video) {
         mVideoInfo = video;
     }
 
-    public VideoInfoData getVideoInfoData() {
+    public AgoraVideoInfoData getVideoInfoData() {
         return mVideoInfo;
     }
 

@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.VideoInfoData;
+import com.sandy.agorachatsandy.model.AgoraVideoInfoData;
 
 public class ViewUtil {
     protected static final boolean DEBUG_ENABLED = false;
@@ -54,7 +54,7 @@ public class ViewUtil {
         }
     }
 
-    public static String composeVideoInfoString(Context context, VideoInfoData videoMetaData) {
+    public static String composeVideoInfoString(Context context, AgoraVideoInfoData videoMetaData) {
         // so far do not show delay info
         return videoMetaData.mWidth + "x" + videoMetaData.mHeight + ", "
                 + context.getString(R.string.frame_rate_value_with_unit, videoMetaData.mFrameRate) + ", "

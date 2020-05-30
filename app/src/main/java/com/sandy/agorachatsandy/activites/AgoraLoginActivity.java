@@ -10,9 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.User;
+import com.sandy.agorachatsandy.model.AgoraUser;
 import com.sandy.agorachatsandy.rtm.AGApplication;
-import com.sandy.agorachatsandy.rtm.ChatManager;
+import com.sandy.agorachatsandy.rtm.AgoraChatManager;
 import com.sandy.agorachatsandy.utils.MessageUtil;
 
 import java.util.Random;
@@ -20,7 +20,7 @@ import java.util.Random;
 import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.RtmClient;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class AgoraLoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RtmClient mRtmClient;
     public static Random RANDOM = new Random();
@@ -28,14 +28,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.agora_activity_login);
 
         Button signInButton = findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(this);
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(this);
-        ChatManager mChatManager = AGApplication.the().getChatManager();
+        AgoraChatManager mChatManager = AGApplication.the().getChatManager();
         mRtmClient = mChatManager.getRtmClient();
     }
 
@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signIn() {
-        final User user = new User("100" + RANDOM.nextInt(90000));
+        final AgoraUser user = new AgoraUser("100" + RANDOM.nextInt(90000));
         user.setFireDisplayName("Sanidhya_" + RANDOM.nextInt(100000));
         TextView textView = findViewById(R.id.status_textview);
         textView.setText(user.getFireDisplayName());
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                        Intent intent = new Intent(LoginActivity.this, ChannelSelectionActivity.class);
 //                        intent.putExtra(MessageUtil.INTENT_EXTRA_USER_ID, user);
 //                        startActivity(intent);
-                        Intent intent = new Intent(LoginActivity.this, VideoCallActivity.class);
+                        Intent intent = new Intent(AgoraLoginActivity.this, AgoraVideoCallActivity.class);
                         intent.putExtra("User", user);
                         intent.putExtra("Channel", "sandy");
                         intent.putExtra(MessageUtil.INTENT_EXTRA_IS_PEER_MODE, false);
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(LoginActivity.this, getString(R.string.login_failed) + " " + errorInfo.getErrorDescription(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AgoraLoginActivity.this, getString(R.string.login_failed) + " " + errorInfo.getErrorDescription(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

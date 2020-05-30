@@ -10,34 +10,24 @@ import android.widget.FrameLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.UserStatusData;
-import com.sandy.agorachatsandy.model.VideoInfoData;
-import com.sandy.agorachatsandy.model.VideoUserStatusHolder;
+import com.sandy.agorachatsandy.model.AgoraUserStatusData;
+import com.sandy.agorachatsandy.model.AgoraVideoInfoData;
+import com.sandy.agorachatsandy.model.AgoraVideoUserStatusHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class AgoraVideoViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final boolean DEBUG = false;
 
     protected final LayoutInflater mInflater;
     protected final Context mContext;
 
-    protected final ArrayList<UserStatusData> mUsers;
+    protected final ArrayList<AgoraUserStatusData> mUsers;
 
     protected int mLocalUid;
-
-    public VideoViewAdapter(Activity activity, int localUid, HashMap<Integer, SurfaceView> uids) {
-        mInflater = ((Activity) activity).getLayoutInflater();
-        mContext = ((Activity) activity).getApplicationContext();
-
-        mLocalUid = localUid;
-
-        mUsers = new ArrayList<>();
-
-        init(uids);
-    }
+    protected HashMap<Integer, AgoraVideoInfoData> mVideoInfo; // left user should removed from this HashMap
 
     protected int mItemWidth;
     protected int mItemHeight;
@@ -54,9 +44,18 @@ public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     public abstract void notifyUiChanged(HashMap<Integer, SurfaceView> uids, int uidExtra, HashMap<Integer, Integer> status, HashMap<Integer, Integer> volume);
 
-    protected HashMap<Integer, VideoInfoData> mVideoInfo; // left user should removed from this HashMap
+    public AgoraVideoViewAdapter(Activity activity, int localUid, HashMap<Integer, SurfaceView> uids) {
+        mInflater = activity.getLayoutInflater();
+        mContext = activity.getApplicationContext();
 
-    public void addVideoInfo(int uid, VideoInfoData video) {
+        mLocalUid = localUid;
+
+        mUsers = new ArrayList<>();
+
+        init(uids);
+    }
+
+    public void addVideoInfo(int uid, AgoraVideoInfoData video) {
         if (mVideoInfo == null) {
             mVideoInfo = new HashMap<>();
         }
@@ -73,28 +72,28 @@ public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.video_view_container, parent, false);
+        ViewGroup v = (ViewGroup) mInflater.inflate(R.layout.agora_video_view_container, parent, false);
         v.getLayoutParams().width = mItemWidth;
         v.getLayoutParams().height = mItemHeight;
         mDefaultChildItem = v.getChildCount();
-        return new VideoUserStatusHolder(v);
+        return new AgoraVideoUserStatusHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        VideoUserStatusHolder myHolder = ((VideoUserStatusHolder) holder);
+        AgoraVideoUserStatusHolder myHolder = ((AgoraVideoUserStatusHolder) holder);
 
-        final UserStatusData user = mUsers.get(position);
+        final AgoraUserStatusData user = mUsers.get(position);
 
         FrameLayout holderView = (FrameLayout) myHolder.itemView;
 
         if (holderView.getChildCount() == mDefaultChildItem) {
             SurfaceView target = user.mView;
-            VideoViewAdapterUtil.stripView(target);
+            AgoraVideoViewAdapterUtil.stripView(target);
             holderView.addView(target, 0, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
 
-        VideoViewAdapterUtil.renderExtraData(mContext, user, myHolder);
+        AgoraVideoViewAdapterUtil.renderExtraData(mContext, user, myHolder);
     }
 
     @Override
@@ -104,7 +103,7 @@ public abstract class VideoViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public long getItemId(int position) {
-        UserStatusData user = mUsers.get(position);
+        AgoraUserStatusData user = mUsers.get(position);
 
         SurfaceView view = user.mView;
         if (view == null) {

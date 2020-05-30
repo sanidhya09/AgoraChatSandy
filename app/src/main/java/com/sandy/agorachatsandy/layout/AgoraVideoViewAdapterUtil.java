@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
-
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.UserStatusData;
-import com.sandy.agorachatsandy.model.VideoInfoData;
-import com.sandy.agorachatsandy.model.VideoUserStatusHolder;
+import com.sandy.agorachatsandy.model.AgoraUserStatusData;
+import com.sandy.agorachatsandy.model.AgoraVideoInfoData;
+import com.sandy.agorachatsandy.model.AgoraVideoUserStatusHolder;
 import com.sandy.agorachatsandy.utils.Constant;
 import com.sandy.agorachatsandy.utils.ViewUtil;
 
@@ -19,36 +18,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class VideoViewAdapterUtil {
+public class AgoraVideoViewAdapterUtil {
 
     private static final boolean DEBUG = false;
 
-    public static void composeDataItem1(final ArrayList<UserStatusData> users, HashMap<Integer, SurfaceView> uids, int localUid) {
+    public static void composeDataItem1(final ArrayList<AgoraUserStatusData> users, HashMap<Integer, SurfaceView> uids, int localUid) {
         for (HashMap.Entry<Integer, SurfaceView> entry : uids.entrySet()) {
             SurfaceView surfaceV = entry.getValue();
             surfaceV.setZOrderOnTop(false);
             surfaceV.setZOrderMediaOverlay(false);
-            searchUidsAndAppend(users, entry, localUid, UserStatusData.DEFAULT_STATUS, UserStatusData.DEFAULT_VOLUME, null);
+            searchUidsAndAppend(users, entry, localUid, AgoraUserStatusData.DEFAULT_STATUS, AgoraUserStatusData.DEFAULT_VOLUME, null);
         }
 
         removeNotExisted(users, uids, localUid);
     }
 
-    private static void removeNotExisted(ArrayList<UserStatusData> users, HashMap<Integer, SurfaceView> uids, int localUid) {
-        Iterator<UserStatusData> it = users.iterator();
+    private static void removeNotExisted(ArrayList<AgoraUserStatusData> users, HashMap<Integer, SurfaceView> uids, int localUid) {
+        Iterator<AgoraUserStatusData> it = users.iterator();
         while (it.hasNext()) {
-            UserStatusData user = it.next();
+            AgoraUserStatusData user = it.next();
             if (uids.get(user.mUid) == null && user.mUid != localUid) {
                 it.remove();
             }
         }
     }
 
-    private static void searchUidsAndAppend(ArrayList<UserStatusData> users, HashMap.Entry<Integer, SurfaceView> entry,
-                                            int localUid, Integer status, int volume, VideoInfoData i) {
+    private static void searchUidsAndAppend(ArrayList<AgoraUserStatusData> users, HashMap.Entry<Integer, SurfaceView> entry,
+                                            int localUid, Integer status, int volume, AgoraVideoInfoData i) {
         if (entry.getKey() == 0 || entry.getKey() == localUid) {
             boolean found = false;
-            for (UserStatusData user : users) {
+            for (AgoraUserStatusData user : users) {
                 if ((user.mUid == entry.getKey() && user.mUid == 0) || user.mUid == localUid) { // first time
                     user.mUid = localUid;
                     if (status != null) {
@@ -61,11 +60,11 @@ public class VideoViewAdapterUtil {
                 }
             }
             if (!found) {
-                users.add(0, new UserStatusData(localUid, entry.getValue(), status, volume, i));
+                users.add(0, new AgoraUserStatusData(localUid, entry.getValue(), status, volume, i));
             }
         } else {
             boolean found = false;
-            for (UserStatusData user : users) {
+            for (AgoraUserStatusData user : users) {
                 if (user.mUid == entry.getKey()) {
                     if (status != null) {
                         user.mStatus = status;
@@ -77,24 +76,24 @@ public class VideoViewAdapterUtil {
                 }
             }
             if (!found) {
-                users.add(new UserStatusData(entry.getKey(), entry.getValue(), status, volume, i));
+                users.add(new AgoraUserStatusData(entry.getKey(), entry.getValue(), status, volume, i));
             }
         }
     }
 
-    public static void composeDataItem(final ArrayList<UserStatusData> users, HashMap<Integer, SurfaceView> uids,
+    public static void composeDataItem(final ArrayList<AgoraUserStatusData> users, HashMap<Integer, SurfaceView> uids,
                                        int localUid,
                                        HashMap<Integer, Integer> status,
                                        HashMap<Integer, Integer> volume,
-                                       HashMap<Integer, VideoInfoData> video) {
+                                       HashMap<Integer, AgoraVideoInfoData> video) {
         composeDataItem(users, uids, localUid, status, volume, video, 0);
     }
 
-    public static void composeDataItem(final ArrayList<UserStatusData> users, HashMap<Integer, SurfaceView> uids,
+    public static void composeDataItem(final ArrayList<AgoraUserStatusData> users, HashMap<Integer, SurfaceView> uids,
                                        int localUid,
                                        HashMap<Integer, Integer> status,
                                        HashMap<Integer, Integer> volume,
-                                       HashMap<Integer, VideoInfoData> video, int uidExcepted) {
+                                       HashMap<Integer, AgoraVideoInfoData> video, int uidExcepted) {
         for (HashMap.Entry<Integer, SurfaceView> entry : uids.entrySet()) {
             int uid = entry.getKey();
 
@@ -119,9 +118,9 @@ public class VideoViewAdapterUtil {
                 }
             }
             if (v == null) {
-                v = UserStatusData.DEFAULT_VOLUME;
+                v = AgoraUserStatusData.DEFAULT_VOLUME;
             }
-            VideoInfoData i;
+            AgoraVideoInfoData i;
             if (video != null) {
                 i = video.get(uid);
                 if (local && i == null) { // check again
@@ -136,9 +135,9 @@ public class VideoViewAdapterUtil {
         removeNotExisted(users, uids, localUid);
     }
 
-    public static void renderExtraData(Context context, UserStatusData user, VideoUserStatusHolder myHolder) {
+    public static void renderExtraData(Context context, AgoraUserStatusData user, AgoraVideoUserStatusHolder myHolder) {
         if (user.mStatus != null) {
-            if ((user.mStatus & UserStatusData.VIDEO_MUTED) != 0) {
+            if ((user.mStatus & AgoraUserStatusData.VIDEO_MUTED) != 0) {
                 myHolder.mAvatar.setVisibility(View.VISIBLE);
                 myHolder.mMaskView.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray));
             } else {
@@ -146,7 +145,7 @@ public class VideoViewAdapterUtil {
                 myHolder.mMaskView.setBackgroundColor(Color.TRANSPARENT);
             }
 
-            if ((user.mStatus & UserStatusData.AUDIO_MUTED) != 0) {
+            if ((user.mStatus & AgoraUserStatusData.AUDIO_MUTED) != 0) {
                 myHolder.mIndicator.setImageResource(R.drawable.icon_muted);
                 myHolder.mIndicator.setVisibility(View.VISIBLE);
                 myHolder.mIndicator.setTag(System.currentTimeMillis());
@@ -172,7 +171,7 @@ public class VideoViewAdapterUtil {
         }
 
         if (Constant.SHOW_VIDEO_INFO && user.getVideoInfoData() != null) {
-            VideoInfoData videoInfo = user.getVideoInfoData();
+            AgoraVideoInfoData videoInfo = user.getVideoInfoData();
             myHolder.mMetaData.setText(ViewUtil.composeVideoInfoString(context, videoInfo));
             myHolder.mVideoInfo.setVisibility(View.VISIBLE);
         } else {

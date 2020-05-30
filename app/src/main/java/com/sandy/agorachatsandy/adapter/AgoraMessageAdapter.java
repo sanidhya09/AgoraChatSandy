@@ -11,24 +11,24 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sandy.agorachatsandy.R;
-import com.sandy.agorachatsandy.model.MessageBean;
+import com.sandy.agorachatsandy.model.AgoraMessageBean;
 
 import java.util.List;
 
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
+public class AgoraMessageAdapter extends RecyclerView.Adapter<AgoraMessageAdapter.MyViewHolder> {
 
-    private List<MessageBean> messageBeanList;
+    private List<AgoraMessageBean> messageBeanList;
     private LayoutInflater inflater;
 
-    public MessageAdapter(Context context, List<MessageBean> messageBeanList) {
+    public AgoraMessageAdapter(Context context, List<AgoraMessageBean> messageBeanList) {
         inflater = ((Activity) context).getLayoutInflater();
         this.messageBeanList = messageBeanList;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.msg_item_layout, parent, false);
+        View view = inflater.inflate(R.layout.agora_msg_item_layout, parent, false);
         MyViewHolder holder = new MyViewHolder(view);
         return holder;
     }
@@ -45,7 +45,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
 
     private void setupView(MyViewHolder holder, int position) {
-        MessageBean bean = messageBeanList.get(position);
+        AgoraMessageBean bean = messageBeanList.get(position);
         if (bean.isBeSelf()) {
             holder.textViewSelfName.setText(bean.getAccount());
             holder.textViewSelfMsg.setText(bean.getMessage());

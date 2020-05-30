@@ -1,6 +1,6 @@
 package com.sandy.agorachatsandy.model;
 
-public class VideoInfoData {
+public class AgoraVideoInfoData {
 
     public int mWidth;
     public int mHeight;
@@ -9,7 +9,7 @@ public class VideoInfoData {
     public int mBitRate;
     public int mCodec;
 
-    public VideoInfoData(int width, int height, int delay, int frameRate, int bitRate, int codec) {
+    public AgoraVideoInfoData(int width, int height, int delay, int frameRate, int bitRate, int codec) {
         this.mWidth = width;
         this.mHeight = height;
         this.mDelay = delay;
@@ -18,7 +18,7 @@ public class VideoInfoData {
         this.mCodec = codec;
     }
 
-    public VideoInfoData(int width, int height, int delay, int frameRate, int bitRate) {
+    public AgoraVideoInfoData(int width, int height, int delay, int frameRate, int bitRate) {
         this(width, height, delay, frameRate, bitRate, 0);
     }
 

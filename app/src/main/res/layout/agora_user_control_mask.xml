@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/video_indicator_bottom_margin"
+        android:layout_marginBottom="@dimen/agora_video_indicator_bottom_margin"
         android:contentDescription="VIDEO_INDICATOR" />
 
     <LinearLayout

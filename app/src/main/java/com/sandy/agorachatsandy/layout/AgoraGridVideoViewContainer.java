@@ -10,25 +10,25 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.sandy.agorachatsandy.model.UserStatusData;
-import com.sandy.agorachatsandy.model.VideoInfoData;
+import com.sandy.agorachatsandy.model.AgoraUserStatusData;
+import com.sandy.agorachatsandy.model.AgoraVideoInfoData;
 import com.sandy.agorachatsandy.ui.RecyclerItemClickListener;
 
 import java.util.HashMap;
 
-public class GridVideoViewContainer extends RecyclerView {
+public class AgoraGridVideoViewContainer extends RecyclerView {
 
-    private GridVideoViewContainerAdapter mGridVideoViewContainerAdapter;
+    private AgoraGridVideoViewContainerAdapter mGridVideoViewContainerAdapter;
 
-    public GridVideoViewContainer(Context context) {
+    public AgoraGridVideoViewContainer(Context context) {
         super(context);
     }
 
-    public GridVideoViewContainer(Context context, @Nullable AttributeSet attrs) {
+    public AgoraGridVideoViewContainer(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public GridVideoViewContainer(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public AgoraGridVideoViewContainer(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -38,7 +38,7 @@ public class GridVideoViewContainer extends RecyclerView {
 
     private boolean initAdapter(Activity activity, int localUid, HashMap<Integer, SurfaceView> uids) {
         if (mGridVideoViewContainerAdapter == null) {
-            mGridVideoViewContainerAdapter = new GridVideoViewContainerAdapter(activity, localUid, uids);
+            mGridVideoViewContainerAdapter = new AgoraGridVideoViewContainerAdapter(activity, localUid, uids);
             mGridVideoViewContainerAdapter.setHasStableIds(true);
             return true;
         }
@@ -79,7 +79,7 @@ public class GridVideoViewContainer extends RecyclerView {
         mGridVideoViewContainerAdapter.notifyUiChanged(uids, localUid, status, volume);
     }
 
-    public void addVideoInfo(int uid, VideoInfoData video) {
+    public void addVideoInfo(int uid, AgoraVideoInfoData video) {
         if (mGridVideoViewContainerAdapter == null) {
             return;
         }
@@ -93,7 +93,7 @@ public class GridVideoViewContainer extends RecyclerView {
         mGridVideoViewContainerAdapter.cleanVideoInfo();
     }
 
-    public UserStatusData getItem(int position) {
+    public AgoraUserStatusData getItem(int position) {
         return mGridVideoViewContainerAdapter.getItem(position);
     }
 
