@@ -4,14 +4,29 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+    signingConfigs {
+        debug {
+            keyAlias 'test123'
+            keyPassword 'test123'
+            storeFile file('../test123.jks')
+            storePassword 'test123'
 
+        }
+        release {
+            keyAlias 'test123'
+            keyPassword 'test123'
+            storeFile file('../test123.jks')
+            storePassword 'test123'
+
+        }
+    }
     defaultConfig {
         applicationId "com.sandy.agorachatsandy"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        signingConfig signingConfigs.debug
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
