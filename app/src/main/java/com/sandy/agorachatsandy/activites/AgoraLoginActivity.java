@@ -64,14 +64,9 @@ public class AgoraLoginActivity extends AppCompatActivity implements View.OnClic
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        Intent intent = new Intent(LoginActivity.this, ChannelSelectionActivity.class);
-//                        intent.putExtra(MessageUtil.INTENT_EXTRA_USER_ID, user);
-//                        startActivity(intent);
                         Intent intent = new Intent(AgoraLoginActivity.this, AgoraVideoCallActivity.class);
                         intent.putExtra("User", user);
-                        intent.putExtra("Channel", "sandy");
-                        intent.putExtra(MessageUtil.INTENT_EXTRA_IS_PEER_MODE, false);
-                        intent.putExtra("Actual Target", "sandy");
+                        intent.putExtra("Channel", "MbChannel1");
                         startActivity(intent);
                     }
                 });

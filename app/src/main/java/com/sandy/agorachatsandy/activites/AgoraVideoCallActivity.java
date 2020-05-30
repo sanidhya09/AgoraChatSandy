@@ -38,9 +38,6 @@ import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 
-import static com.sandy.agorachatsandy.utils.MessageUtil.INTENT_EXTRA_IS_PEER_MODE;
-
-
 public class AgoraVideoCallActivity extends AppCompatActivity {
     public static final int LAYOUT_TYPE_DEFAULT = 0;
     public static final int LAYOUT_TYPE_SMALL = 1;
@@ -103,7 +100,6 @@ public class AgoraVideoCallActivity extends AppCompatActivity {
             });
         }
     };
-    private boolean mIsPeerToPeerMode = true;
     private String mActualTarget;
 
     private final HashMap<Integer, SurfaceView> mUidsList = new HashMap<>();
@@ -140,7 +136,6 @@ public class AgoraVideoCallActivity extends AppCompatActivity {
     private void getExtras() {
         channelName = getIntent().getExtras().getString("Channel");
         user = getIntent().getExtras().getParcelable("User");
-        mIsPeerToPeerMode = getIntent().getBooleanExtra(INTENT_EXTRA_IS_PEER_MODE, true);
         mActualTarget = getIntent().getExtras().getString("Actual Target");
     }
 
@@ -435,12 +430,8 @@ public class AgoraVideoCallActivity extends AppCompatActivity {
 
     private void jumpToMessageActivity() {
         Intent intent = new Intent(this, AgoraMessageActivity.class);
-        intent.putExtra(INTENT_EXTRA_IS_PEER_MODE, mIsPeerToPeerMode);
-        if (!mIsPeerToPeerMode) {
-            intent.putExtra(MessageUtil.INTENT_EXTRA_TARGET_NAME, channelName);
-        } else {
-            intent.putExtra(MessageUtil.INTENT_EXTRA_TARGET_NAME, mActualTarget);
-        }
+        intent.putExtra(MessageUtil.INTENT_EXTRA_TARGET_NAME, channelName);
+
         intent.putExtra(MessageUtil.INTENT_EXTRA_USER_ID, user);
         startActivity(intent);
     }

@@ -13,7 +13,6 @@ public class MessageUtil {
     public static final int MAX_INPUT_NAME_LENGTH = 64;
     public static final int ACTIVITY_RESULT_CONN_ABORTED = 1;
 
-    public static final String INTENT_EXTRA_IS_PEER_MODE = "chatMode";
     public static final String INTENT_EXTRA_USER_ID = "user";
     public static final String INTENT_EXTRA_TARGET_NAME = "targetName";
 

@@ -16,7 +16,6 @@ import com.sandy.agorachatsandy.R;
 import com.sandy.agorachatsandy.adapter.AgoraMessageAdapter;
 import com.sandy.agorachatsandy.model.AgoraMessageBean;
 import com.sandy.agorachatsandy.model.AgoraUser;
-import com.sandy.agorachatsandy.model.MessageListBean;
 import com.sandy.agorachatsandy.rtm.AGApplication;
 import com.sandy.agorachatsandy.rtm.AgoraChatManager;
 import com.sandy.agorachatsandy.utils.MessageUtil;
@@ -46,7 +45,6 @@ public class AgoraMessageActivity extends AppCompatActivity {
     private List<AgoraMessageBean> mMessageBeanList = new ArrayList<>();
     private AgoraMessageAdapter mMessageAdapter;
 
-    private boolean mIsPeerToPeerMode = true;
     private AgoraUser user;
     private String mPeerId = "";
     private String mChannelName = "";
@@ -75,28 +73,10 @@ public class AgoraMessageActivity extends AppCompatActivity {
 
         mTitleTextView = findViewById(R.id.message_title);
 
-        if (mIsPeerToPeerMode) {
-            mPeerId = targetName;
-            mTitleTextView.setText(mPeerId);
-
-            // load history chat records
-            MessageListBean messageListBean = MessageUtil.getExistMessageListBean(mPeerId);
-            if (messageListBean != null) {
-                mMessageBeanList.addAll(messageListBean.getMessageBeanList());
-            }
-
-            // load offline messages since last chat with this peer.
-            // Then clear cached offline messages from message pool
-            // since they are already consumed.
-            MessageListBean offlineMessageBean = new MessageListBean(mPeerId, mChatManager);
-            mMessageBeanList.addAll(offlineMessageBean.getMessageBeanList());
-            mChatManager.removeAllOfflineMessages(mPeerId);
-        } else {
-            mChannelName = targetName;
-            mChannelMemberCount = 1;
-            mTitleTextView.setText(mChannelName + "(" + mChannelMemberCount + ")");
-            createAndJoinChannel();
-        }
+        mChannelName = targetName;
+        mChannelMemberCount = 1;
+        mTitleTextView.setText(mChannelName + "(" + mChannelMemberCount + ")");
+        createAndJoinChannel();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -110,7 +90,6 @@ public class AgoraMessageActivity extends AppCompatActivity {
 
     private void getExtras() {
         Intent intent = getIntent();
-        mIsPeerToPeerMode = intent.getBooleanExtra(MessageUtil.INTENT_EXTRA_IS_PEER_MODE, true);
         user = intent.getParcelableExtra(MessageUtil.INTENT_EXTRA_USER_ID);
         targetName = intent.getStringExtra(MessageUtil.INTENT_EXTRA_TARGET_NAME);
     }
@@ -154,11 +133,7 @@ public class AgoraMessageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mIsPeerToPeerMode) {
-            MessageUtil.addMessageListBeanList(new MessageListBean(mPeerId, mMessageBeanList));
-        } else {
-            leaveChannel();
-        }
+        leaveChannel();
         mChatManager.unregisterListener(mClientListener);
     }
 
@@ -212,11 +187,7 @@ public class AgoraMessageActivity extends AppCompatActivity {
             mMessageBeanList.add(messageBean);
             mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
             mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);
-            if (mIsPeerToPeerMode) {
-                sendPeerMessage(msg);
-            } else {
-                sendChannelMessage(msg);
-            }
+            sendChannelMessage(msg);
         }
         mMsgEditText.setText("");
     }
@@ -311,46 +282,6 @@ public class AgoraMessageActivity extends AppCompatActivity {
                             case RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_TIMEOUT:
                             case RtmStatusCode.ChannelMessageError.CHANNEL_MESSAGE_ERR_FAILURE:
                                 showToast(getString(R.string.send_msg_failed));
-                                break;
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * API CALL: send message to peer
-     */
-    private void sendPeerMessage(String content) {
-        // step 1: create a message
-        RtmMessage message = mRtmClient.createMessage();
-        message.setText(content);
-
-        // step 2: send message to peer
-        mRtmClient.sendMessageToPeer(mPeerId, message, mChatManager.getSendMessageOptions(), new ResultCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-            }
-
-            @Override
-            public void onFailure(ErrorInfo errorInfo) {
-                // refer to RtmStatusCode.PeerMessageState for the message state
-                final int errorCode = errorInfo.getErrorCode();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (errorCode) {
-                            case RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_TIMEOUT:
-                            case RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_FAILURE:
-                                showToast(getString(R.string.send_msg_failed));
-                                break;
-                            case RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_PEER_UNREACHABLE:
-                                showToast(getString(R.string.peer_offline));
-                                break;
-                            case RtmStatusCode.PeerMessageError.PEER_MESSAGE_ERR_CACHED_BY_SERVER:
-                                showToast(getString(R.string.message_cached));
                                 break;
                         }
                     }
