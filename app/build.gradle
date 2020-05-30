@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     signingConfigs {
         debug {
             keyAlias 'test123'
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId "com.sandy.agorachatsandy"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         signingConfig signingConfigs.debug
