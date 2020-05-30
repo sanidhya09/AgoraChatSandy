@@ -1,19 +1,25 @@
 package com.sandy.agorachatsandy.activites
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
 import android.view.ViewStub
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sandy.agorachatsandy.R
 import com.sandy.agorachatsandy.activites.AgoraVideoCallActivity
+import com.sandy.agorachatsandy.layout.AgoraGridVideoViewContainer
 import com.sandy.agorachatsandy.layout.AgoraSmallVideoViewAdapter
 import com.sandy.agorachatsandy.layout.AgoraSmallVideoViewDecoration
 import com.sandy.agorachatsandy.model.AgoraUser
@@ -24,20 +30,20 @@ import io.agora.rtc.Constants
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
-import kotlinx.android.synthetic.main.agora_activity_video_call.*
 import java.util.*
 
 class AgoraVideoCallActivity : AppCompatActivity() {
-
     private var channelName: String? = null
     private var user: AgoraUser? = null
     var mLayoutType = LAYOUT_TYPE_DEFAULT
-    private var mRtcEngine: RtcEngine? = null
+    var mRtcEngine: RtcEngine? = null
+    private var mCallBtn: ImageView? = null
+    private var mMuteBtn: ImageView? = null
+    private var mGridVideoViewContainer: AgoraGridVideoViewContainer? = null
     private var isCalling = true
     private var isMuted = false
     private val mIsLandscape = false
     private var mSmallVideoViewDock: RelativeLayout? = null
-
     private val mUidsList = HashMap<Int, SurfaceView?>()
     private var mSmallVideoViewAdapter: AgoraSmallVideoViewAdapter? = null
 
@@ -56,9 +62,10 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         // Listen for the onFirstRemoteVideoDecoded callback.
         // This callback occurs when the first video frame of a remote user is received and decoded after the remote user successfully joins the channel.
         // You can call the setupRemoteVideo method in this callback to set up the remote video view.
-        override fun onFirstRemoteVideoFrame(uid: Int, width: Int, height: Int, elapsed: Int) {
-            super.onFirstRemoteVideoFrame(uid, width, height, elapsed)
-            runOnUiThread { setupRemoteVideo(uid) }
+        override fun onFirstRemoteVideoDecoded(uid: Int, width: Int, height: Int, elapsed: Int) {
+            runOnUiThread {
+                setupRemoteVideo(uid)
+            }
         }
 
         // Listen for the onUserOffline callback.
@@ -77,14 +84,21 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         val ab = supportActionBar
         ab?.hide()
         setContentView(R.layout.agora_activity_video_call)
-        channelName = intent?.extras?.getString("Channel")
-        user = intent?.extras?.getParcelable("User")
+        channelName = intent.extras.getString("Channel")
+        user = intent.extras.getParcelable("User")
         initUI()
-        initEngineAndJoinChannel()
+        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
+                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+            initEngineAndJoinChannel()
+        }
     }
 
     private fun initUI() {
-        grid_video_view_container.setItemEventHandler(object : RecyclerItemClickListener.OnItemClickListener {
+        mCallBtn = findViewById(R.id.start_call_end_call_btn)
+        mMuteBtn = findViewById(R.id.audio_mute_audio_unmute_btn)
+        mGridVideoViewContainer = findViewById(R.id.grid_video_view_container)
+        mGridVideoViewContainer?.setItemEventHandler(object : RecyclerItemClickListener.OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 //can add single click listener logic
             }
@@ -110,7 +124,10 @@ class AgoraVideoCallActivity : AppCompatActivity() {
             RtcEngine.create(baseContext, getString(R.string.agora_app_id), mRtcEventHandler)
         } catch (e: Exception) {
             Log.e(TAG, Log.getStackTraceString(e))
-            throw RuntimeException(""" NEED TO check rtc sdk init fatal error ${Log.getStackTraceString(e)} """.trimIndent())
+            throw RuntimeException("""
+    NEED TO check rtc sdk init fatal error
+    ${Log.getStackTraceString(e)}
+    """.trimIndent())
         }
     }
 
@@ -124,7 +141,7 @@ class AgoraVideoCallActivity : AppCompatActivity() {
             surfaceView.setZOrderOnTop(false)
             surfaceView.setZOrderMediaOverlay(false)
             mUidsList[0] = surfaceView
-            grid_video_view_container!!.initViewContainer(this@AgoraVideoCallActivity, 0, mUidsList, mIsLandscape)
+            mGridVideoViewContainer!!.initViewContainer(this@AgoraVideoCallActivity, 0, mUidsList, mIsLandscape)
         }
     }
 
@@ -133,11 +150,20 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         mRtcEngine!!.joinChannel(null, channelName, "Extra Optional Data", 0)
     }
 
+    private fun checkSelfPermission(permission: String, requestCode: Int): Boolean {
+        if (ContextCompat.checkSelfPermission(this, permission) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode)
+            return false
+        }
+        return true
+    }
+
     private fun onBigVideoViewDoubleClicked(view: View, position: Int) {
         if (mUidsList.size < 2) {
             return
         }
-        val user = grid_video_view_container!!.getItem(position)
+        val user = mGridVideoViewContainer!!.getItem(position)
         val uid = if (user.mUid == 0) this.user!!.agoraUid else user.mUid
         if (mLayoutType == LAYOUT_TYPE_DEFAULT && mUidsList.size != 1) {
             switchToSmallVideoView(uid)
@@ -157,7 +183,7 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         }
         mUidsList[bigBgUid]!!.setZOrderOnTop(false)
         mUidsList[bigBgUid]!!.setZOrderMediaOverlay(false)
-        grid_video_view_container!!.initViewContainer(this, bigBgUid, slice, mIsLandscape)
+        mGridVideoViewContainer!!.initViewContainer(this, bigBgUid, slice, mIsLandscape)
         bindToSmallVideoView(bigBgUid)
         mLayoutType = LAYOUT_TYPE_SMALL
     }
@@ -236,7 +262,7 @@ class AgoraVideoCallActivity : AppCompatActivity() {
     }
 
     private fun switchToDefaultVideoView() {
-        grid_video_view_container!!.initViewContainer(this@AgoraVideoCallActivity, user!!.agoraUid, mUidsList, mIsLandscape)
+        mGridVideoViewContainer!!.initViewContainer(this@AgoraVideoCallActivity, user!!.agoraUid, mUidsList, mIsLandscape)
         var setRemoteUserPriorityFlag = false
         mLayoutType = LAYOUT_TYPE_DEFAULT
         var sizeLimit = mUidsList.size
@@ -244,7 +270,7 @@ class AgoraVideoCallActivity : AppCompatActivity() {
             sizeLimit = 5
         }
         for (i in 0 until sizeLimit) {
-            val uid = grid_video_view_container!!.getItem(i).mUid
+            val uid = mGridVideoViewContainer!!.getItem(i).mUid
             if (user!!.agoraUid != uid) {
                 if (!setRemoteUserPriorityFlag) {
                     setRemoteUserPriorityFlag = true
@@ -274,13 +300,13 @@ class AgoraVideoCallActivity : AppCompatActivity() {
             //finish current call
             finishCalling()
             isCalling = false
-            start_call_end_call_btn!!.setImageResource(R.drawable.btn_startcall)
+            mCallBtn!!.setImageResource(R.drawable.btn_startcall)
             finish()
         } else {
             //start the call
             startCalling()
             isCalling = true
-            start_call_end_call_btn!!.setImageResource(R.drawable.btn_endcall)
+            mCallBtn!!.setImageResource(R.drawable.btn_endcall)
         }
     }
 
@@ -302,7 +328,7 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         isMuted = !isMuted
         mRtcEngine!!.muteLocalAudioStream(isMuted)
         val res = if (isMuted) R.drawable.btn_mute else R.drawable.btn_unmute
-        audio_mute_audio_unmute_btn!!.setImageResource(res)
+        mMuteBtn!!.setImageResource(res)
     }
 
     fun onVideoChatClicked(view: View?) {
@@ -320,5 +346,13 @@ class AgoraVideoCallActivity : AppCompatActivity() {
         const val LAYOUT_TYPE_DEFAULT = 0
         const val LAYOUT_TYPE_SMALL = 1
         private val TAG = AgoraVideoCallActivity::class.java.name
+        private const val PERMISSION_REQ_ID = 22
+
+        // Ask for Android device permissions at runtime.
+        private val REQUESTED_PERMISSIONS = arrayOf(
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><dimen name="local_preview_width">88dp</dimen>
+<resources>
+    <dimen name="local_preview_width">88dp</dimen>
     <dimen name="local_preview_height">117dp</dimen>
     <dimen name="local_back_icon_size">50dp</dimen>
     <dimen name="remote_back_icon_size">100dp</dimen>
