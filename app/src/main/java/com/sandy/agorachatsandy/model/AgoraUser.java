@@ -37,11 +37,11 @@ public class AgoraUser implements Parcelable {
         this.fireUid = fireUid;
     }
 
-    public String getFireDisplayName() {
+    public String getDisplayName() {
         return fireDisplayName;
     }
 
-    public void setFireDisplayName(String fireDisplayName) {
+    public void setDisplayName(String fireDisplayName) {
         this.fireDisplayName = fireDisplayName;
     }
 

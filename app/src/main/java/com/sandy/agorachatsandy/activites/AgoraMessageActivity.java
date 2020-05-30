@@ -183,7 +183,7 @@ public class AgoraMessageActivity extends AppCompatActivity {
     public void onClickSend(View v) {
         String msg = mMsgEditText.getText().toString();
         if (!msg.equals("")) {
-            AgoraMessageBean messageBean = new AgoraMessageBean(user.getFireDisplayName(), msg, true);
+            AgoraMessageBean messageBean = new AgoraMessageBean(user.getDisplayName(), msg, true);
             mMessageBeanList.add(messageBean);
             mMessageAdapter.notifyItemRangeChanged(mMessageBeanList.size(), 1);
             mRecyclerView.scrollToPosition(mMessageBeanList.size() - 1);

@@ -42,10 +42,10 @@ class AgoraLoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun signIn() {
         val user = AgoraUser("100${mRandom.nextInt()}")
-        user.fireDisplayName = "Sanidhya_${mRandom.nextInt()}"
+        user.displayName = "Sanidhya_${mRandom.nextInt()}"
         val textView = findViewById<TextView>(R.id.status_textview)
-        textView.text = user.fireDisplayName
-        mRtmClient.login(null, user.fireDisplayName, object : ResultCallback<Void?> {
+        textView.text = user.displayName
+        mRtmClient.login(null, user.displayName, object : ResultCallback<Void?> {
             override fun onSuccess(aVoid: Void?) {
                 runOnUiThread {
                     val intent = Intent(this@AgoraLoginActivity, AgoraVideoCallActivity::class.java)
