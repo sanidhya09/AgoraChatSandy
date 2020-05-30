@@ -38,6 +38,8 @@ class AgoraMessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.agora_activity_message)
+        val ab = supportActionBar
+        ab?.hide()
         init()
     }
 
