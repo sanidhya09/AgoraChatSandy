@@ -108,6 +108,7 @@ class AgoraMessageActivity : AppCompatActivity() {
                     showToast("leve channel failed")
                 }
             })
+            mRtmChannel!!.release()
             mRtmChannel = null
         }
     }
